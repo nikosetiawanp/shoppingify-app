@@ -1,0 +1,10 @@
+ITEMS
+- GET items by category
+- CREATE item
+
+CATEGORY
+- GET category
+- CREATE category
+
+SHOPPINGLIST
+- GET all items

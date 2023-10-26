@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(uuid())
+  name         String         @unique
+  email        String
+  password     String
+  shoppingList ShoppingList[]
+  categories   Category[]
+  Item         Item[]
+}
+
+model ShoppingList {
+  id            String         @id @default(uuid())
+  name          String
+  createdAt     DateTime       @default(now())
+  status        Status         @default(active)
+  userId        String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shoppingItems ShoppingItem[]
+}
+
+model Category {
+  id     String @id @default(uuid())
+  name   String @unique
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items  Item[]
+}
+
+model Item {
+  id            String         @id @default(uuid())
+  name          String         @unique
+  note          String?
+  imageUrl      String?
+  createdAt     DateTime       @default(now())
+  categoryId    String
+  category      Category       @relation(fields: [categoryId], references: [id])
+  userId        String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shoppingItems ShoppingItem[]
+}
+
+model ShoppingItem {
+  id             String       @id @default(uuid())
+  quantity       Int          @default(1)
+  shoppinglistId String
+  shoppinglist   ShoppingList @relation(fields: [shoppinglistId], references: [id], onDelete: Cascade)
+  itemId         String
+  item           Item         @relation(fields: [itemId], references: [id], onDelete: Cascade)
+}
+
+enum Status {
+  active
+  completed
+  cancelled
+}
