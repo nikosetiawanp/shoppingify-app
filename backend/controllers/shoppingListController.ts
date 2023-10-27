@@ -1,8 +1,9 @@
 import { PrismaClient, Prisma } from "@prisma/client";
+import { Request, Response } from "express";
 const prisma = new PrismaClient();
 
 // CREATE
-export const createShoppingList = async (req, res) => {
+export const createShoppingList = async (req: Request, res: Response) => {
   const { name, userId } = req.body;
   try {
     const shoppingList = await prisma.shoppingList.create({
@@ -18,7 +19,7 @@ export const createShoppingList = async (req, res) => {
 };
 
 // READ
-export const getAllShoppingLists = async (req, res) => {
+export const getAllShoppingLists = async (req: Request, res: Response) => {
   try {
     const shoppingLists = await prisma.shoppingList.findMany({
       include: {
@@ -36,7 +37,7 @@ export const getAllShoppingLists = async (req, res) => {
 };
 
 // READ
-export const getShoppingList = async (req, res) => {
+export const getShoppingList = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const shoppingList = await prisma.shoppingList.findUnique({
@@ -52,7 +53,7 @@ export const getShoppingList = async (req, res) => {
       },
     });
     res.json(shoppingList);
-  } catch (error) {
+  } catch (error: any) {
     if (error.code == "P2025") {
       res.status(404).json({
         status: 404,
@@ -69,7 +70,7 @@ export const getShoppingList = async (req, res) => {
 };
 
 // UPDATE
-export const patchShoppingList = async (req, res) => {
+export const patchShoppingList = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, status } = req.body;
   try {
@@ -79,11 +80,11 @@ export const patchShoppingList = async (req, res) => {
       },
       data: {
         name: `${name}`,
-        status: `${status}` || `${status}`,
+        status: status,
       },
     });
     res.status(200).json(shoppingList);
-  } catch (error) {
+  } catch (error: any) {
     if (error.code == "P2025") {
       res.status(404).json({
         status: 404,
@@ -100,7 +101,7 @@ export const patchShoppingList = async (req, res) => {
 };
 
 // DELETE
-export const deleteShoppingList = async (req, res) => {
+export const deleteShoppingList = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     await prisma.shoppingList.delete({
@@ -109,7 +110,7 @@ export const deleteShoppingList = async (req, res) => {
       },
     });
     res.status(204).json();
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
     if (error.code == "P2025") {
       res.status(404).json({

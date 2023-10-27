@@ -1,8 +1,9 @@
 import { PrismaClient, Prisma } from "@prisma/client";
+import { Request, Response } from "express";
 const prisma = new PrismaClient();
 
 // CREATE
-export const createShoppingItem = async (req, res) => {
+export const createShoppingItem = async (req: Request, res: Response) => {
   const { shoppinglistId, itemId, quantity } = req.body;
   try {
     const shoppingItem = await prisma.shoppingItem.create({
@@ -19,7 +20,7 @@ export const createShoppingItem = async (req, res) => {
 };
 
 // UPDATE
-export const patchShoppingItem = async (req, res) => {
+export const patchShoppingItem = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { quantity } = req.body;
   try {
@@ -32,7 +33,7 @@ export const patchShoppingItem = async (req, res) => {
       },
     });
     res.status(200).json(shoppingItem);
-  } catch (error) {
+  } catch (error: any) {
     if (error.code == "P2025") {
       res.status(404).json({
         status: 404,
@@ -49,7 +50,7 @@ export const patchShoppingItem = async (req, res) => {
 };
 
 // DELETE
-export const deleteShoppingItem = async (req, res) => {
+export const deleteShoppingItem = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     await prisma.shoppingItem.delete({
@@ -58,7 +59,7 @@ export const deleteShoppingItem = async (req, res) => {
       },
     });
     res.status(204).json();
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
     if (error.code == "P2025") {
       res.status(404).json({

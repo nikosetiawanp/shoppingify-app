@@ -3,7 +3,7 @@ import {
   createShoppingItem,
   deleteShoppingItem,
   patchShoppingItem,
-} from "../controllers/shoppingItemController.js";
+} from "../controllers/shoppingItemController.ts";
 
 const router = express.Router();
 

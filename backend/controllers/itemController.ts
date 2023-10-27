@@ -1,9 +1,10 @@
 import { PrismaClient, Prisma } from "@prisma/client";
+import { Request, Response } from "express";
 
 const prisma = new PrismaClient();
 
 // CREATE
-export const createItem = async (req, res) => {
+export const createItem = async (req: Request, res: Response) => {
   const { name, note, imageUrl, categoryId } = req.body;
   try {
     const item = await prisma.item.create({
@@ -12,10 +13,10 @@ export const createItem = async (req, res) => {
         note: `${note}` || null,
         imageUrl: `${imageUrl}` || null,
         categoryId: `${categoryId}`,
-      },
+      } as Prisma.ItemUncheckedCreateInput,
     });
     res.status(201).json(item);
-  } catch (error) {
+  } catch (error: any) {
     if (error.code == "P2002") {
       res.status(409).json({
         status: 409,
@@ -31,7 +32,7 @@ export const createItem = async (req, res) => {
 };
 
 // READ
-export const getAllItems = async (req, res) => {
+export const getAllItems = async (req: Request, res: Response) => {
   try {
     const items = await prisma.item.findMany({
       include: {
@@ -45,7 +46,7 @@ export const getAllItems = async (req, res) => {
 };
 
 // UPDATE
-export const patchItem = async (req, res) => {
+export const patchItem = async (req: Request, res: Response) => {
   const { name, note, imageUrl, categoryId } = req.body;
   const { id } = req.params;
 
@@ -62,7 +63,7 @@ export const patchItem = async (req, res) => {
       },
     });
     res.status(200).json(item);
-  } catch (error) {
+  } catch (error: any) {
     if (error.code == "P2025") {
       res.status(404).json({
         status: 404,
@@ -79,7 +80,7 @@ export const patchItem = async (req, res) => {
 };
 
 // DELETE
-export const deleteItem = async (req, res) => {
+export const deleteItem = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     await prisma.item.delete({
@@ -88,7 +89,7 @@ export const deleteItem = async (req, res) => {
       },
     });
     res.status(204).json();
-  } catch (error) {
+  } catch (error: any) {
     if (error.code == "P2025") {
       res.status(404).json({
         status: 404,

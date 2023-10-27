@@ -6,7 +6,7 @@ import {
   createShoppingList,
   patchShoppingList,
   getShoppingList,
-} from "../controllers/shoppingListController.js";
+} from "../controllers/shoppingListController.ts";
 
 const router = express.Router();
 

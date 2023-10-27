@@ -1,17 +1,18 @@
 import { PrismaClient, Prisma } from "@prisma/client";
+import { Request, Response } from "express";
 const prisma = new PrismaClient();
 
 // CREATE
-export const createCategory = async (req, res) => {
+export const createCategory = async (req: Request, res: Response) => {
   const { name } = req.body;
   try {
     const category = await prisma.category.create({
       data: {
         name: `${name}`,
-      },
+      } as Prisma.CategoryCreateInput,
     });
     res.status(201).json(category);
-  } catch (error) {
+  } catch (error: any) {
     if (error.code == "P2002") {
       res.status(409).json({
         status: 409,
@@ -27,7 +28,7 @@ export const createCategory = async (req, res) => {
 };
 
 // READ
-export const getAllCategories = async (req, res) => {
+export const getAllCategories = async (req: Request, res: Response) => {
   try {
     const categories = await prisma.category.findMany({
       include: {
@@ -75,7 +76,7 @@ export const getAllCategories = async (req, res) => {
 // };
 
 // DELETE
-export const deleteCategory = async (req, res) => {
+export const deleteCategory = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     await prisma.category.delete({
@@ -84,7 +85,7 @@ export const deleteCategory = async (req, res) => {
       },
     });
     res.status(204).json();
-  } catch (error) {
+  } catch (error: any) {
     if (error.code == "P2025") {
       res.status(404).json({
         status: 404,
