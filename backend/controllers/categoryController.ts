@@ -1,10 +1,14 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 import { Request, Response } from "express";
+import { userFromAccessToken } from "../middlewares/userFromAccessToken";
+
 const prisma = new PrismaClient();
+const jwtSecret = `${process.env.JWT_SECRET}`;
 
 // CREATE
 export const createCategory = async (req: Request, res: Response) => {
   const { name } = req.body;
+
   try {
     const category = await prisma.category.create({
       data: {
@@ -29,8 +33,16 @@ export const createCategory = async (req: Request, res: Response) => {
 
 // READ
 export const getAllCategories = async (req: Request, res: Response) => {
+  const accessToken = req.header("Authorization") as string;
+  const user = (await userFromAccessToken(accessToken, jwtSecret)) as any;
+
   try {
     const categories = await prisma.category.findMany({
+      where: {
+        userId: {
+          in: ["shoppingify", user.id],
+        },
+      },
       include: {
         items: true,
       },
@@ -77,6 +89,9 @@ export const getAllCategories = async (req: Request, res: Response) => {
 
 // DELETE
 export const deleteCategory = async (req: Request, res: Response) => {
+  const accessToken = req.header("Authorization") as string;
+  const user = (await userFromAccessToken(accessToken, jwtSecret)) as any;
+
   const { id } = req.params;
   try {
     await prisma.category.delete({

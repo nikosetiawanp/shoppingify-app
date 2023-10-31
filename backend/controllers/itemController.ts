@@ -1,11 +1,14 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 import { Request, Response } from "express";
+import { userFromAccessToken } from "../middlewares/userFromAccessToken";
 
 const prisma = new PrismaClient();
+const jwtSecret = `${process.env.JWT_SECRET}`;
 
 // CREATE
 export const createItem = async (req: Request, res: Response) => {
   const { name, note, imageUrl, categoryId } = req.body;
+
   try {
     const item = await prisma.item.create({
       data: {
@@ -33,8 +36,16 @@ export const createItem = async (req: Request, res: Response) => {
 
 // READ
 export const getAllItems = async (req: Request, res: Response) => {
+  const accessToken = req.header("Authorization") as string;
+  const user = (await userFromAccessToken(accessToken, jwtSecret)) as any;
+
   try {
     const items = await prisma.item.findMany({
+      where: {
+        userId: {
+          in: ["shoppingify", user.id],
+        },
+      },
       include: {
         category: true,
       },

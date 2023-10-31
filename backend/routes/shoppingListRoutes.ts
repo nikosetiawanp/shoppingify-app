@@ -1,5 +1,4 @@
 import express from "express";
-
 import {
   deleteShoppingList,
   getAllShoppingLists,
@@ -7,7 +6,6 @@ import {
   patchShoppingList,
   getShoppingList,
 } from "../controllers/shoppingListController.ts";
-
 import { verifyToken } from "../middlewares/authMiddleware.ts";
 
 const router = express.Router();

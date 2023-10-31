@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
-const jwtSecret = process.env.JWT_SECRET;
+const jwtSecret = process.env.JWT_SECRET as string;
 
 // REGISTER
 export const register = async (req: Request, res: Response) => {
@@ -42,9 +42,10 @@ export const login = async (req: Request, res: Response) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        email: email,
+        email,
       },
     });
+
     if (!user) {
       res.status(401).json({ message: "Authentication failed" });
       return;
@@ -54,7 +55,8 @@ export const login = async (req: Request, res: Response) => {
       res.status(401).json({ message: "Authentication failed" });
       return;
     }
-    const token = jwt.sign({ username: user.email }, jwtSecret as string);
+
+    const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "24h" });
     res.status(200).json({ message: "Authentication successful", token });
   } catch (error) {}
 };
