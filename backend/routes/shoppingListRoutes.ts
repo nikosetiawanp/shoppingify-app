@@ -8,7 +8,11 @@ import {
   getShoppingList,
 } from "../controllers/shoppingListController.ts";
 
+import { verifyToken } from "../middlewares/authMiddleware.ts";
+
 const router = express.Router();
+
+router.use(verifyToken);
 
 router.route("/").get(getAllShoppingLists).post(createShoppingList);
 router
